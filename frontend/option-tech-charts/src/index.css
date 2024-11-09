@@ -1,0 +1,68 @@
+header {
+  height: 10vh;
+}
+
+aside {
+  height: 100vh;
+}
+
+.title-container {
+  display: flex;
+  align-items: center;
+}
+
+svg {
+  font-size: large;
+  color: inherit;
+}
+
+.toggle-theme {
+  margin: auto auto auto 0;
+}
+
+.titles {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  margin-right: auto;
+}
+
+.titles h2 {
+  margin: 0 0 0.25rem;
+}
+
+main {
+  height: 80vh;
+}
+
+.chart-container {
+  width: 100%;
+  height: 95%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+a {
+  color: inherit;
+}
+
+footer {
+  text-align: center;
+  height: 10vh;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
