@@ -5,7 +5,7 @@ import React, { useState } from "react";
 const siderItems = [
   {
     key: "1",
-    label: "Walls",
+    label: "OI",
   },
   {
     key: "2",
@@ -13,6 +13,10 @@ const siderItems = [
   },
   {
     key: "3",
+    label: "DEX",
+  },
+  {
+    key: "4",
     label: "Other",
   },
 ];
