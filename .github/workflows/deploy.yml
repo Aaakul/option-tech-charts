@@ -42,7 +42,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "16.x"
+          node-version: "18.x"
 
       - name: Cache node_modules
         id: cache-node-modules
@@ -60,7 +60,7 @@ jobs:
 
       - name: Build React app
         working-directory: frontend/option-tech-charts
-        run: npm run build
+        run: npm run build:deploy
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4

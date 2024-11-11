@@ -23,6 +23,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "build:deploy": "cross-env PUBLIC_URL=/option-tech-charts react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -45,6 +46,7 @@
     ]
   },
   "devDependencies": {
-    "@types/chart.js": "^2.9.41"
+    "@types/chart.js": "^2.9.41",
+    "cross-env": "^7.0.3"
   }
 }
