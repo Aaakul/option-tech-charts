@@ -13,10 +13,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: "3.x"
 
@@ -41,9 +41,9 @@ jobs:
           cp -r backend/JSON/* frontend/option-tech-charts/public/data/
 
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
-          node-version: "14.x"
+          node-version: "16.x"
 
       - name: Install npm dependencies
         working-directory: frontend/option-tech-charts
@@ -62,5 +62,6 @@ jobs:
           commit_message: "Deploy to GitHub Pages"
           user_name: "github-actions[bot]"
           user_email: "github-actions[bot]@noreply.github.com"
+          destination_dir: option-tech-charts  # 指定目标目录
+          keep_files: false  # 不保留现有文件
           force_orphan: true
-          target_directory: option-tech-charts
