@@ -55,7 +55,9 @@ const OIChart = () => {
     // fetch JSON data
     const fetchData = async () => {
       try {
-        const response = await fetch("/data/SPY_OI_chart_data.json");
+        const response = await fetch(
+          `${process.env.PUBLIC_URL}/data/SPY_OI_chart_data.json`
+        );
         const data: OptionData[] = await response.json();
         // get chart data
         data.sort((a, b) => b.strike - a.strike);

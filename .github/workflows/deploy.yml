@@ -52,15 +52,17 @@ jobs:
         working-directory: frontend/option-tech-charts
         run: npm run build:deploy
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          personal_token: ${{ secrets.DEPLOY_TOKEN }}
-          publish_dir: ./frontend/option-tech-charts/build
-          external_repository: aaakul/aaakul.github.io
-          destination_dir: option-tech-charts # 指定目标目录
-          commit_message: "Deploy to GitHub Pages"
-          user_name: "github-actions[bot]"
-          user_email: "github-actions[bot]@noreply.github.com"
-          keep_files: true # 保留现有文件
-          force_orphan: true
+      - name: Clone external repository
+        run: |
+          git clone https://${{ secrets.DEPLOY_TOKEN }}@github.com/Aaakul/aaakul.github.io.git
+          cd Aaakul.github.io
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@noreply.github.com"
+
+      - name: Copy build files to external repository
+        run: |
+          cp -r ./frontend/option-tech-charts/build/* ./Aaakul.github.io/option-tech-charts/
+          cd Aaakul.github.io
+          git add .
+          git commit -m "Deploy to GitHub Pages"
+          git push --set-upstream origin gh-pages
