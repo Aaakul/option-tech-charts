@@ -14,8 +14,8 @@ const MyContent: React.FC<MyContentProps> = ({
   isDarkTheme,
   onToggleTheme,
 }) => {
-  const chartTitle = "SPY Open Interest Chart";
-  const chartDesc = "*Negative numbers represent OI of puts";
+  const chartTitle = "SPY Open Interest Chart of current month";
+  const chartDesc = "Update at before-open every weekdays. *Negative numbers represent OI of puts";
 
   return (
     <Layout>
