@@ -1,9 +1,9 @@
 name: Update chart data and deploy to GitHub Pages
 
 on:
-  # push:
-  #   branches:
-  #     - main # 监听main分支的推送
+  push:
+    branches:
+      - main # 监听main分支的推送
   schedule:
     - cron: "0 10 * * 1-5" # 北京时间下午6:00触发（UTC时间上午10:00）
 
