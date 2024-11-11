@@ -54,7 +54,7 @@ jobs:
 
       - name: Clone external repository
         run: |
-          git clone https://${{ secrets.DEPLOY_TOKEN }}@github.com/Aaakul/aaakul.github.io.git
+          git clone https://${{ secrets.DEPLOY_TOKEN }}@github.com/Aaakul/Aaakul.github.io.git
           cd Aaakul.github.io
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@noreply.github.com"
