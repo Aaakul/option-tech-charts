@@ -24,7 +24,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "build:deploy": "cross-env PUBLIC_URL=/option-tech-charts react-scripts build",
+    "build:deploy": "npx cross-env PUBLIC_URL=/option-tech-charts react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
