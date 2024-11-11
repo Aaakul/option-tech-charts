@@ -14,14 +14,15 @@ const MyContent: React.FC<MyContentProps> = ({
   isDarkTheme,
   onToggleTheme,
 }) => {
+  const chartTitle = "SPY Open Interest Chart";
+  const chartDesc = "*Negative numbers represent OI of puts";
+
   return (
     <Layout>
       <MyHeader isDarkTheme={isDarkTheme} onToggleTheme={onToggleTheme} />
-      <Content style={{ margin: "0 16px" }}>
-        <h2>Open Interest Chart</h2>
-        <div className="chart-desc" style={{ margin: "16px 0" }}>
-          description
-        </div>
+      <Content>
+        <h2>{chartTitle}</h2>
+        <div className="chart-desc">{chartDesc}</div>
         <OIChart />
       </Content>
       <MyFooter />

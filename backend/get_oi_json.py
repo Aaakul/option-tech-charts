@@ -10,9 +10,6 @@ input_path = f'./data/{symbol}/{input_file_name}'
 
 df = pd.read_csv(input_path)
 
-# 检查读取的DataFrame
-print("读取的CSV文件内容:")
-print(df.head())
 
 # 准备数据
 data = []
@@ -27,10 +24,10 @@ for _, row in df.iterrows():
     })
 
 # 保存为JSON文件
-output_dir = f'./data/{symbol}'
+output_dir = f'./JSON/{symbol}/'
 os.makedirs(output_dir, exist_ok=True)
 
-output_file_name = f'{symbol}_chart_data_{datetime.now().month}.json'
+output_file_name = f'{symbol}_OI_chart_data.json'
 output_path = os.path.join(output_dir, output_file_name)
 
 with open(output_path, 'w') as json_file:

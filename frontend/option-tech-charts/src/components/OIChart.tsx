@@ -11,7 +11,7 @@ import {
   Legend,
 } from "chart.js";
 
-// 注册所有必要的图表组件
+// register chart components
 ChartJS.register(
   ...registerables,
   CategoryScale,
@@ -40,24 +40,24 @@ const OIChart = () => {
     datasets: [
       {
         label: "Call Options",
-        backgroundColor: "#00FF00", // 绿色
+        backgroundColor: "#00FF00", // green
         data: [],
       },
       {
         label: "Put Options",
-        backgroundColor: "#FF0000", // 红色
+        backgroundColor: "#FF0000", // red
         data: [],
       },
     ],
   });
 
   useEffect(() => {
-    // 从本地JSON文件获取数据
+    // fetch JSON data
     const fetchData = async () => {
       try {
-        const response = await fetch("/data/SPY_chart_data_11.json");
+        const response = await fetch("/data/SPY_OI_chart_data.json");
         const data: OptionData[] = await response.json();
-        // 准备图表数据
+        // get chart data
         data.sort((a, b) => b.strike - a.strike);
         const labels = data.map((item) => item.strike);
         const callData = data.map((item) => item.call_open_interest);
@@ -69,12 +69,12 @@ const OIChart = () => {
           datasets: [
             {
               label: "Call Options",
-              backgroundColor: "#00FF00", // 绿色
+              backgroundColor: "#00FF00",
               data: callData,
             },
             {
               label: "Put Options",
-              backgroundColor: "#FF0000", // 红色
+              backgroundColor: "#FF0000",
               data: putData,
             },
           ],
@@ -92,25 +92,25 @@ const OIChart = () => {
   const options: ChartOptions<"bar"> = {
     maintainAspectRatio: false,
     responsive: true,
-    indexAxis: "y", // 将索引轴设置为 Y 轴
+    indexAxis: "y", // set y as index axes
     scales: {
       x: {
         stacked: true,
         ticks: {
-          display: false, // 隐藏 X 轴的刻度线和坐标标签
+          display: false,
         },
         grid: {
-          display: false, // 隐藏 X 轴的网格线
+          display: false, 
         },
       },
       y: {
         stacked: true,
         beginAtZero: true,
         ticks: {
-          maxTicksLimit: 15, // 设置 Y 轴最多显示 5 个刻度
+          maxTicksLimit: 15,
         },
         grid: {
-          display: false, // 隐藏 Y 轴的网格线
+          display: false, 
         },
       },
     },

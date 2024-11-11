@@ -1,10 +1,5 @@
 [
     {
-        "strike": 520.0,
-        "call_open_interest": 39102.0,
-        "put_open_interest": -0.0
-    },
-    {
         "strike": 540.0,
         "call_open_interest": 21278.0,
         "put_open_interest": -0.0
@@ -63,11 +58,6 @@
         "strike": 575.0,
         "call_open_interest": 27312.0,
         "put_open_interest": -43005.0
-    },
-    {
-        "strike": 576.0,
-        "call_open_interest": 13204.0,
-        "put_open_interest": -4022.0
     },
     {
         "strike": 577.0,

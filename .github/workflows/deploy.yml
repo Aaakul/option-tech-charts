@@ -1,0 +1,66 @@
+name: Update chart data and deploy to GitHub Pages
+
+on:
+  # push:
+  #   branches:
+  #     - main # 监听main分支的推送
+  schedule:
+    - cron: "0 10 * * 1-5" # 北京时间下午6:00触发（UTC时间上午10:00）
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.x"
+
+      - name: Install Python dependencies
+        run: |
+          pip install requests pandas
+
+      - name: Run Python scripts
+        env: 
+          ALPHA_VANTAGE_API_KEY: ${{ secrets.ALPHA_VANTAGE_API_KEY }}
+        run: |
+          cd backend
+          python get_csv.py
+          python get_current_month.py
+          python get_filtered_oi.py
+          python get_summary.py
+          python get_oi_json.py
+
+
+      - name: Copy JSON files to React public directory
+        run: |
+          cp -r backend/JSON/* frontend/option-tech-charts/public/data/
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14.x"
+
+      - name: Install npm dependencies
+        working-directory: frontend/option-tech-charts
+        run: npm install
+
+      - name: Build React app
+        working-directory: frontend/option-tech-charts
+        run: npm run build
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./frontend/option-tech-charts/build
+          publish_branch: portfolio
+          commit_message: "Deploy to GitHub Pages"
+          user_name: "github-actions[bot]"
+          user_email: "github-actions[bot]@noreply.github.com"
+          force_orphan: true
+          target_directory: option-tech-charts

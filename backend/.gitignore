@@ -1,1 +1,5 @@
+# secret
 .env
+
+# raw data
+*.csv

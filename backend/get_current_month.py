@@ -14,7 +14,7 @@ def get_month_dates():
     return first_day_of_month.strftime('%Y-%m-%d'), last_day_of_month.strftime('%Y-%m-%d')
 
 # 读取CSV文件
-symbol = 'SPY'  # 这里可以替换成其他标的物
+symbol = 'SPY'
 file_name = f'./data/{symbol}/historical_options_{symbol}.csv'
 df = pd.read_csv(file_name)
 

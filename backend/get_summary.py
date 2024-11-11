@@ -10,10 +10,6 @@ input_path = f'./data/{symbol}/{input_file_name}'
 # 读取CSV文件
 df = pd.read_csv(input_path)
 
-# 检查读取的DataFrame
-print("读取的CSV文件内容:")
-print(df.head())
-
 # 确保所有必要的列都在DataFrame中
 required_columns = ['expiration', 'strike', 'type', 'open_interest', 'delta', 'gamma']
 if not all(column in df.columns for column in required_columns):
@@ -44,10 +40,6 @@ def calculate_totals(group):
 
 # 按strike分组并应用计算函数
 result_df = df.groupby('strike').apply(calculate_totals).reset_index()
-
-# 检查计算结果
-print("计算结果:")
-print(result_df.head())
 
 # 创建输出目录
 output_dir = f'./data/{symbol}'

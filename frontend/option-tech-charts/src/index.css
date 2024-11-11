@@ -3,12 +3,16 @@ header {
 }
 
 aside {
-  height: 100vh;
+  height: 90vh;
 }
 
 .title-container {
   display: flex;
   align-items: center;
+}
+
+.ant-dropdown-trigger {
+  margin: auto auto auto 0;
 }
 
 svg {
@@ -17,14 +21,13 @@ svg {
 }
 
 .toggle-theme {
-  margin: auto auto auto 0;
+  margin: auto 0;
 }
 
-.titles {
+.title {
   display: flex;
   justify-content: center;
   flex-direction: column;
-  text-align: center;
   margin-right: auto;
 }
 
@@ -34,6 +37,9 @@ svg {
 
 main {
   height: 80vh;
+  padding: 0;
+  padding-left: 3%;
+  padding-right: 3%;
 }
 
 .chart-container {

@@ -10,24 +10,17 @@ input_path = f'./data/{symbol}/{input_file_name}'
 # 读取CSV文件
 df = pd.read_csv(input_path)
 
-# 检查读取的DataFrame
-print("读取的CSV文件内容:")
-print(df.head())
+# 计算列表中strike的中位数
+strike_mean = df['strike'].median()
 
-# 定义收盘价为均值
-close = 598
-strike_mean = close
-
-# 计算strike的标准差
-strike_std = df['strike'].std()
 
 # 计算1个标准差范围
 # 68% range
-lower_bound = strike_mean - 1 * strike_std
-upper_bound = strike_mean + 1 * strike_std
+# lower_bound = strike_mean - 1 * strike_std
+# upper_bound = strike_mean + 1 * strike_std
 
-# 筛选出trike在1个标准差范围内的数据
-filtered_df = df[(df['strike'] >= lower_bound) & (df['strike'] <= upper_bound)]
+# 筛选strike
+filtered_df = df[(df['strike'] >= strike_mean)]
 
 # 计算put_open_interest和call_open_interest的标准差
 # put_open_interest_std = filtered_df['put_open_interest'].std()
@@ -45,10 +38,6 @@ second_filtered_df = filtered_df[
 
 # 只保留需要的列
 final_df = second_filtered_df[['strike',"call_open_interest","put_open_interest","call_delta","put_delta","call_gamma","put_gamma"]]
-
-# 检查筛选后的DataFrame
-print("筛选后的DataFrame:")
-print(final_df.head())
 
 # 创建输出目录
 output_dir = f'./data/{symbol}'
