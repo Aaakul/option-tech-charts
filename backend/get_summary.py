@@ -23,11 +23,15 @@ def calculate_totals(group):
     call_open_interest = call_group['open_interest'].sum()
     put_open_interest = put_group['open_interest'].sum()
     
-    call_delta = (call_group['delta'] * call_group['open_interest']).sum()
-    put_delta = (put_group['delta'] * put_group['open_interest']).sum()
+    # 合约乘数100
+    call_delta = (call_group['delta'] * call_group['open_interest'] * 100).round(2).sum()
+    put_delta = (put_group['delta'] * put_group['open_interest'] * 100).round(2).sum() # 不需要加上负号
+    call_gamma = (call_group['gamma'] * call_group['open_interest'] * 100).round(2).sum()
+    put_gamma = -(put_group['gamma'] * put_group['open_interest'] * 100).round(2).sum()  # 对put的gamma加上负号
     
-    call_gamma = (call_group['gamma'] * call_group['open_interest']).sum()
-    put_gamma = -(put_group['gamma'] * put_group['open_interest']).sum()  # 对put的gamma加上负号
+    # 计算净Delta, Gamma
+    net_delta = call_delta + put_delta
+    net_gamma = call_gamma + put_gamma  
     
     return pd.Series({
         'call_open_interest': call_open_interest,
@@ -35,7 +39,9 @@ def calculate_totals(group):
         'call_delta': call_delta,
         'put_delta': put_delta,
         'call_gamma': call_gamma,
-        'put_gamma': put_gamma
+        'put_gamma': put_gamma,
+        'net_delta': net_delta,
+        'net_gamma': net_gamma,
     })
 
 # 按strike分组并应用计算函数

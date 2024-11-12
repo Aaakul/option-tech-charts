@@ -36,8 +36,8 @@ second_filtered_df = filtered_df[
     (filtered_df['call_open_interest'] > call_open_interest_lower_bound)
 ]
 
-# 只保留需要的列
-final_df = second_filtered_df[['strike',"call_open_interest","put_open_interest","call_delta","put_delta","call_gamma","put_gamma"]]
+# # 只保留需要的列
+# final_df = second_filtered_df[['strike',"call_open_interest","put_open_interest","call_delta","put_delta","call_gamma","put_gamma"]]
 
 # 创建输出目录
 output_dir = f'./data/{symbol}'
@@ -46,6 +46,6 @@ os.makedirs(output_dir, exist_ok=True)
 # 保存筛选后的数据到新的CSV文件
 output_file_name = f'{symbol}_filtered_{datetime.now().month}.csv'
 output_path = os.path.join(output_dir, output_file_name)
-final_df.to_csv(output_path, index=False)
+second_filtered_df.to_csv(output_path, index=False)
 
 print(f"数据已筛选并保存到 {output_path}")

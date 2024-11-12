@@ -1,5 +1,5 @@
-import { GithubOutlined} from "@ant-design/icons";
-import {  Space } from "antd";
+import { GithubOutlined } from "@ant-design/icons";
+import { Space } from "antd";
 import { Footer } from "antd/es/layout/layout";
 import React from "react";
 
@@ -7,11 +7,11 @@ const MyFooter: React.FC = () => {
   return (
     <Footer>
       <Space>
+        <p>NON-INVESTMENT ADVICE</p>
         <a
-          href="https://www.github.com/aaakul"
+          href="https://github.com/Aaakul/option-tech-charts"
           target="_blank"
           rel="noopener noreferrer"
-          className="main-card-extra"
         >
           <GithubOutlined />
         </a>

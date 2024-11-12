@@ -1,9 +1,9 @@
 import { Layout } from "antd";
 import { Content } from "antd/es/layout/layout";
-import React from "react";
+import React, { useState } from "react";
 import MyHeader from "./MyHeader";
 import MyFooter from "./MyFooter";
-import OIChart from "./OIChart";
+import Chart from "./Chart";
 
 interface MyContentProps {
   isDarkTheme: boolean;
@@ -14,16 +14,49 @@ const MyContent: React.FC<MyContentProps> = ({
   isDarkTheme,
   onToggleTheme,
 }) => {
-  const chartTitle = "SPY Open Interest Chart of current month";
-  const chartDesc = "Update at before-open every weekdays. *Negative numbers represent OI of puts";
+  const [selectedChart, setSelectedChart] = useState("OI"); // ...DEX, GEX
+  const [selectedSymbol, setSelectedSymbol] = useState("SPY");
+
+  const handleChartSelect = (chartType: string) => {
+    setSelectedChart(chartType);
+  };
+  
+  const handleSymbolSelect = (symbol: string) => {
+    setSelectedSymbol(symbol.toUpperCase);
+  };
+
+  const chartTitle = `${selectedSymbol} option ${selectedChart}`;
+  let chartDesc = "Current month contracts total ",
+    chartDescExtra =
+      "Update at before-open every weekdays. Click the data labels to hide/unhide the data.";
+
+  switch (selectedChart) {
+    case "OI":
+      chartDesc +=
+        "open interest.  *Negative numbers represent OI of puts. " +
+        chartDescExtra;
+      break;
+    case "DEX":
+      chartDesc += "delta exposure. " + chartDescExtra;
+      break;
+    case "GEX":
+      chartDesc += "gamma exposure. " + chartDescExtra;
+  }
 
   return (
     <Layout>
-      <MyHeader isDarkTheme={isDarkTheme} onToggleTheme={onToggleTheme} />
+      <MyHeader
+        isDarkTheme={isDarkTheme}
+        onToggleTheme={onToggleTheme}
+        onChartSelect={handleChartSelect}
+        onSymbolSelect={handleSymbolSelect}
+      />
       <Content>
         <h2>{chartTitle}</h2>
-        <div className="chart-desc">{chartDesc}</div>
-        <OIChart />
+        <div className="chart-desc">
+          <p>{chartDesc}</p>
+        </div>
+        <Chart selectedChart={selectedChart} symbol={selectedSymbol} />
       </Content>
       <MyFooter />
     </Layout>

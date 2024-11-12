@@ -31,9 +31,9 @@ jobs:
           cd backend
           python get_csv.py
           python get_current_month.py
-          python get_filtered_oi.py
+          python get_filtered.py
           python get_summary.py
-          python get_oi_json.py
+          python get_json.py
 
       - name: Copy JSON files to React public directory
         run: |
@@ -42,7 +42,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "18.x"
+          node-version: ">=18.x"
 
       - name: Install npm dependencies
         working-directory: frontend/option-tech-charts

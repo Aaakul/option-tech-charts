@@ -10,23 +10,30 @@ import React from "react";
 interface TitleProps {
   isDarkTheme: boolean;
   onToggleTheme: () => void;
+  onChartSelect: (chartType: string) => void;
+  onSymbolSelect: (symbol: string) => void;
 }
 
-const MyHeader: React.FC<TitleProps> = ({ isDarkTheme, onToggleTheme }) => {
+const MyHeader: React.FC<TitleProps> = ({
+  isDarkTheme,
+  onToggleTheme,
+  onChartSelect,
+}) => {
   const items: MenuProps["items"] = [
     {
-      label: <a href="/">Open Interest</a>,
+      label: <p>Open Interest</p>,
       key: "0",
+      onClick: () => onChartSelect("OI"),
     },
     {
-      label: <a href="/">Coming soon: GEX</a>,
+      label: <p>GEX</p>,
       key: "1",
-      disabled: true,
+      onClick: () => onChartSelect("GEX"),
     },
     {
-      label: <a href="/">Coming soon: DEX</a>,
+      label: <p >DEX</p>,
       key: "2",
-      disabled: true,
+      onClick: () => onChartSelect("DEX"),
     },
   ];
 
@@ -34,7 +41,10 @@ const MyHeader: React.FC<TitleProps> = ({ isDarkTheme, onToggleTheme }) => {
     <Header>
       <div className="title-container">
         <Dropdown menu={{ items }}>
-          <a href="/#" onClick={(e) => e.preventDefault()}>
+          <a
+            href={`${process.env.PUBLIC_URL}`}
+            onClick={(e) => e.preventDefault()}
+          >
             <Button type="text" icon={<MenuUnfoldOutlined />} />
           </a>
         </Dropdown>

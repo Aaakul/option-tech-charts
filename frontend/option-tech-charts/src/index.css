@@ -31,8 +31,8 @@ svg {
   margin-right: auto;
 }
 
-.titles h2 {
-  margin: 0 0 0.25rem;
+main h2 {
+  margin: 0.25rem 0 0.25rem 0;
 }
 
 main {
@@ -44,10 +44,15 @@ main {
 
 .chart-container {
   width: 100%;
-  height: 85%;
+  height: 88%;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+
+p {
+  margin: 0;
 }
 
 a {
