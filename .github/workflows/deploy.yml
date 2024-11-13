@@ -5,7 +5,7 @@ on:
     branches:
       - main # 监听main分支的推送
   schedule:
-    - cron: "0 10 * * 1-5" # 北京时间下午6:00触发（UTC时间上午10:00）
+    - cron: "0 1 * * 1-5" # 北京时间上午9:00触发（UTC时间凌晨1:00）
 
 jobs:
   build-and-deploy:
@@ -64,5 +64,10 @@ jobs:
           cp -r ./frontend/option-tech-charts/build/* ./Aaakul.github.io/option-tech-charts/
           cd Aaakul.github.io
           git add .
-          git commit -m "Deploy to GitHub Pages"
-          git push --set-upstream origin gh-pages
+          # 检查是否有更改
+          if git diff-index --quiet HEAD; then
+            echo "No changes to commit"
+          else
+            git commit -m "Deploy to GitHub Pages"
+            git push --set-upstream origin gh-pages
+          fi

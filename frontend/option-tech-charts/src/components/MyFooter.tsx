@@ -15,7 +15,6 @@ const MyFooter: React.FC = () => {
         >
           <GithubOutlined />
         </a>
-        <br />
         <a
           href="https://ant-design.antgroup.com/"
           target="_blank"

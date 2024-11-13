@@ -28,7 +28,7 @@ const MyContent: React.FC<MyContentProps> = ({
   const chartTitle = `${selectedSymbol} option ${selectedChart}`;
   let chartDesc = "Current month contracts total ",
     chartDescExtra =
-      "Update at before-open every weekdays. Click the data labels to hide/unhide the data.";
+      "Update at GMT 01:00 every weekdays. Click the data labels to hide/unhide the data.";
 
   switch (selectedChart) {
     case "OI":
