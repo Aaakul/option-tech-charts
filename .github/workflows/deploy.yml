@@ -5,7 +5,7 @@ on:
     branches:
       - main # 监听main分支的推送
   schedule:
-    - cron: "0 1 * * 1-5" # 北京时间上午9:00触发（UTC时间凌晨1:00）
+    - cron: "0 5 * * 1-5" # UTC时间凌晨5:00触发（东部时间 0点/1点 ）
 
 jobs:
   build-and-deploy:
