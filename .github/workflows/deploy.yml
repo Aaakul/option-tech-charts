@@ -3,9 +3,9 @@ name: Update chart data and deploy to GitHub Pages
 on:
   push:
     branches:
-      - main # 监听main分支的推送
+      - main
   schedule:
-    - cron: "0 5 * * 1-5" # UTC时间凌晨5:00触发（东部时间 0点/1点 ）
+    - cron: "0 5 * * 1-5" # UTC AM 5:00 (ET 0/1:00 ）
 
 jobs:
   build-and-deploy:
@@ -19,6 +19,11 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: "3.x"
+          cache: 'pip' # caching pip dependencies
+
+      - name: Install Python dependencies
+        run: |
+          pip install -r ./backend/requirements.txt
 
       - name: Install Python dependencies
         run: |
@@ -77,7 +82,7 @@ jobs:
           cp -r ./frontend/option-tech-charts/build/* ./Aaakul.github.io/option-tech-charts/
           cd Aaakul.github.io
           git add .
-          # 检查是否有更改
+          # check git status
           if git diff-index --quiet HEAD; then
             echo "No changes to commit"
           else
