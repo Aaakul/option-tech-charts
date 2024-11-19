@@ -3,9 +3,9 @@ name: Update chart data and deploy to GitHub Pages
 on:
   push:
     branches:
-      - main
+      - main # 监听main分支的推送
   schedule:
-    - cron: "0 5 * * 1-5" # UTC AM 05:00（ET 0:00/1:00 ）
+    - cron: "0 5 * * 1-5" # UTC时间凌晨5:00触发（东部时间 0点/1点 ）
 
 jobs:
   build-and-deploy:
@@ -50,14 +50,17 @@ jobs:
         env:
           cache-name: cache-node-modules
         with:
-        path: frontend/option-tech-charts/node_modules
-        key: ${{ runner.os }}-npm-cache-${{ hashFiles('frontend/option-tech-charts/package-lock.json') }}
+         # npm cache files are stored in `~/.npm` on Linux/macOS
+          path: ~/.npm
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
-          ${{ runner.os }}-npm-cache-    
+          ${{ runner.os }}-build-${{ env.cache-name }}-
+          ${{ runner.os }}-build-
+          ${{ runner.os }}-      
 
       - name: Install npm dependencies
         working-directory: frontend/option-tech-charts
-        run: npm ci
+        run: npm install
 
       - name: Build React app
         working-directory: frontend/option-tech-charts
@@ -80,7 +83,7 @@ jobs:
           cp -r ./frontend/option-tech-charts/build/* ./Aaakul.github.io/option-tech-charts/
           cd Aaakul.github.io
           git add .
-          # check git status
+          # 检查是否有更改
           if git diff-index --quiet HEAD; then
             echo "No changes to commit"
           else
