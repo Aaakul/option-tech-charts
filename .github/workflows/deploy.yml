@@ -58,6 +58,11 @@ jobs:
           cd Aaakul.github.io
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@noreply.github.com"
+      
+      - name: Clean destination directory
+        run: |
+          rm -rf ./Aaakul.github.io/option-tech-charts/*
+          mkdir -p ./Aaakul.github.io/option-tech-charts/    
 
       - name: Copy build files to external repository
         run: |
