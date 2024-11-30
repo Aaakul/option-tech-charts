@@ -25,10 +25,6 @@ jobs:
         run: |
           pip install -r ./backend/requirements.txt
 
-      - name: Install Python dependencies
-        run: |
-          pip install requests pandas
-
       - name: Run Python scripts
         env:
           ALPHA_VANTAGE_API_KEY: ${{ secrets.ALPHA_VANTAGE_API_KEY }}
@@ -39,6 +35,9 @@ jobs:
           python get_filtered.py
           python get_summary.py
           python get_json.py
+
+      - name: List JSON files
+        run: ls backend/JSON/
 
       - name: Copy JSON files to React public directory
         run: |
