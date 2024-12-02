@@ -32,12 +32,12 @@ jobs:
           cd backend
           python get_csv.py
           python get_current_month.py
-          python get_filtered.py
           python get_summary.py
+          python get_filtered.py
           python get_json.py
 
       - name: List JSON files
-        run: ls backend/JSON/
+        run: ls -la backend/JSON/
 
       - name: Copy JSON files to React public directory
         run: |
