@@ -1,51 +1,103 @@
-from datetime import datetime
-import pandas as pd
 import os
+import pandas as pd
+from datetime import datetime
 
-# 读取第一步生成的CSV文件
-symbol = 'SPY'  # 这里可以替换成其他标的物
-input_file_name = f'{symbol}_summary_{datetime.now().month}.csv'
-input_path = f'./data/{symbol}/{input_file_name}'
+def load_csv(file_path):
+    """
+    Load a CSV file into a DataFrame.
 
-# 读取CSV文件
-df = pd.read_csv(input_path)
+    :param file_path: The path to the CSV file.
+    :return: A pandas DataFrame containing the CSV data or None if an error occurs.
+    """
+    try:
+        df = pd.read_csv(file_path)
+        return df
+    except FileNotFoundError:
+        print(f"Error: The file {file_path} does not exist.")
+        return None
+    except pd.errors.EmptyDataError:
+        print(f"Error: The file {file_path} is empty.")
+        return None
+    except Exception as e:
+        print(f"An error occurred while reading the file: {e}")
+        return None
 
-# 计算列表中strike的中位数
-strike_mean = df['strike'].median()
+def filter_data(df):
+    """
+    Filter the DataFrame based on specified criteria.
 
+    :param df: The input DataFrame.
+    :return: A filtered DataFrame.
+    """
+    # Calculate the median of strike prices
+    strike_mean = df['strike'].median()
 
-# 计算1个标准差范围
-# 68% range
-# lower_bound = strike_mean - 1 * strike_std
-# upper_bound = strike_mean + 1 * strike_std
+    # Filter strikes greater than or equal to the median
+    filtered_df = df[df['strike'] >= strike_mean]
 
-# 筛选strike
-filtered_df = df[(df['strike'] >= strike_mean)]
+    # Calculate the mean of put and call open interest
+    put_open_interest_lower_bound = filtered_df['put_open_interest'].mean()
+    call_open_interest_lower_bound = filtered_df['call_open_interest'].mean()
 
-# 计算put_open_interest和call_open_interest的标准差
-# put_open_interest_std = filtered_df['put_open_interest'].std()
-# call_open_interest_std = filtered_df['call_open_interest'].std()
+    # Filter rows where put or call open interest is greater than its respective lower bound
+    second_filtered_df = filtered_df[
+        (filtered_df['put_open_interest'] > put_open_interest_lower_bound) |
+        (filtered_df['call_open_interest'] > call_open_interest_lower_bound)
+    ]
 
-# 计算put_open_interest和call_open_interest的下限值
-put_open_interest_lower_bound = filtered_df['put_open_interest'].mean()
-call_open_interest_lower_bound = filtered_df['call_open_interest'].mean()
+    # Optionally, you can uncomment the following line to retain only specific columns
+    # final_df = second_filtered_df[['strike', 'call_open_interest', 'put_open_interest', 'call_delta', 'put_delta', 'call_gamma', 'put_gamma']]
+    
+    return second_filtered_df
 
-# 筛选出put_open_interest大于其下限值或call_open_interest大于其下限值的数据
-second_filtered_df = filtered_df[
-    (filtered_df['put_open_interest'] > put_open_interest_lower_bound) |
-    (filtered_df['call_open_interest'] > call_open_interest_lower_bound)
-]
+def save_filtered_data(filtered_df, output_path):
+    """
+    Save the filtered DataFrame to a new CSV file.
 
-# # 只保留需要的列
-# final_df = second_filtered_df[['strike',"call_open_interest","put_open_interest","call_delta","put_delta","call_gamma","put_gamma"]]
+    :param filtered_df: The filtered DataFrame to save.
+    :param output_path: The path where the new CSV file will be saved.
+    :return: True if the file was saved successfully, False otherwise.
+    """
+    try:
+        filtered_df.to_csv(output_path, index=False)
+        print(f"Filtered data has been saved to {output_path}")
+        return True
+    except Exception as e:
+        print(f"An error occurred while saving the file: {e}")
+        return False
 
-# 创建输出目录
-output_dir = f'./data/{symbol}'
-os.makedirs(output_dir, exist_ok=True)
+def main(symbol):
+    """
+    Main function to execute the data filtering process.
 
-# 保存筛选后的数据到新的CSV文件
-output_file_name = f'{symbol}_filtered_{datetime.now().month}.csv'
-output_path = os.path.join(output_dir, output_file_name)
-second_filtered_df.to_csv(output_path, index=False)
+    :param symbol: The stock or option symbol to process.
+    """
+    # Define file paths
+    now = datetime.now()
+    input_file_name = f'{symbol}_summary_{now.year}_{now.month}.csv'
+    input_dir = f'./data/{symbol}'
+    input_path = os.path.join(input_dir, input_file_name)
 
-print(f"数据已筛选并保存到 {output_path}")
+    # Load the CSV file into a DataFrame
+    df = load_csv(input_path)
+    if df is None:
+        print("Failed to load the CSV file. Exiting.")
+        return
+
+    # Filter the data
+    filtered_df = filter_data(df)
+
+    # Create output directory if it doesn't exist
+    os.makedirs(input_dir, exist_ok=True)
+
+    # Define the output file name with year and month
+    output_file_name = f'{symbol}_filtered_{now.year}_{now.month}.csv'
+    output_path = os.path.join(input_dir, output_file_name)
+
+    # Save the filtered data to a new CSV file
+    save_filtered_data(filtered_df, output_path)
+
+if __name__ == "__main__":
+    # Specify the symbol to process
+    symbol = 'SPY'
+    main(symbol)

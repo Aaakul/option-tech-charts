@@ -2,8 +2,12 @@ import pandas as pd
 from datetime import datetime, timedelta
 import os
 
-# 获取当前月份的第一个和最后一个日期
 def get_month_dates():
+    """
+    Get the first and last dates of the current month.
+
+    :return: A tuple containing the first and last day of the month as strings in 'YYYY-MM-DD' format.
+    """
     today = datetime.now()
     first_day_of_month = today.replace(day=1)
     if today.month == 12:
@@ -13,31 +17,100 @@ def get_month_dates():
     last_day_of_month = next_month - timedelta(days=1)
     return first_day_of_month.strftime('%Y-%m-%d'), last_day_of_month.strftime('%Y-%m-%d')
 
-# 读取CSV文件
-symbol = 'SPY'
-file_name = f'./data/{symbol}/historical_options_{symbol}.csv'
-df = pd.read_csv(file_name)
+def load_csv(file_path):
+    """
+    Load a CSV file into a DataFrame.
 
+    :param file_path: The path to the CSV file.
+    :return: A pandas DataFrame containing the CSV data.
+    """
+    try:
+        df = pd.read_csv(file_path)
+        return df
+    except FileNotFoundError:
+        print(f"Error: The file {file_path} does not exist.")
+        return None
+    except pd.errors.EmptyDataError:
+        print(f"Error: The file {file_path} is empty.")
+        return None
+    except Exception as e:
+        print(f"An error occurred while reading the file: {e}")
+        return None
 
-# 获取本月的第一个和最后一个日期
-first_day_of_month, last_day_of_month = get_month_dates()
+def filter_data(df, first_day, last_day):
+    """
+    Filter the DataFrame for the current month's data based on expiration date and other criteria.
 
-# 筛选条件
-filtered_df = df[(df['expiration'] >= first_day_of_month) & 
-                 (df['expiration'] <= last_day_of_month) & 
-                 (df['delta'].abs() > 0.05) & 
-                 (df['open_interest'] > 0)]
+    :param df: The input DataFrame.
+    :param first_day: The first day of the current month as a string in 'YYYY-MM-DD' format.
+    :param last_day: The last day of the current month as a string in 'YYYY-MM-DD' format.
+    :return: A filtered DataFrame.
+    """
+    # Convert 'expiration' column to datetime
+    df['expiration'] = pd.to_datetime(df['expiration'])
 
-# 只保留需要的列
-filtered_df = filtered_df[['expiration', 'strike', 'type', 'open_interest', 'implied_volatility', 'delta', 'gamma']]
+    # Apply filtering conditions
+    filtered_df = df[(df['expiration'] >= first_day) & 
+                     (df['expiration'] <= last_day) & 
+                     (df['delta'].abs() > 0.05) & 
+                     (df['open_interest'] > 0)]
 
-# 创建输出目录
-output_dir = f'./data/{symbol}'
-os.makedirs(output_dir, exist_ok=True)
+    # Select only required columns
+    filtered_columns = ['expiration', 'strike', 'type', 'open_interest', 'implied_volatility', 'delta', 'gamma']
+    return filtered_df[filtered_columns]
 
-# 保存筛选后的数据到新的CSV文件
-output_file_name = f'{symbol}_{datetime.now().month}.csv'
-output_path = os.path.join(output_dir, output_file_name)
-filtered_df.to_csv(output_path, index=False)
+def save_filtered_data(filtered_df, output_path):
+    """
+    Save the filtered DataFrame to a new CSV file.
 
-print(f"数据已筛选并保存到 {output_path}")
+    :param filtered_df: The filtered DataFrame to save.
+    :param output_path: The path where the new CSV file will be saved.
+    :return: True if the file was saved successfully, False otherwise.
+    """
+    try:
+        filtered_df.to_csv(output_path, index=False)
+        print(f"Data has been filtered and saved to {output_path}")
+        return True
+    except Exception as e:
+        print(f"An error occurred while saving the file: {e}")
+        return False
+
+def main(symbol):
+    """
+    Main function to execute the data filtering process.
+
+    :param symbol: The stock or option symbol to process.
+    """
+    # Define file paths
+    input_dir = f'./data/{symbol}'
+    input_file_name = f'historical_options_{symbol}.csv'
+    input_path = os.path.join(input_dir, input_file_name)
+
+    # Get the first and last dates of the current month
+    first_day, last_day = get_month_dates()
+
+    # Load the CSV file into a DataFrame
+    df = load_csv(input_path)
+    if df is None:
+        print("Failed to load the CSV file. Exiting.")
+        return
+
+    # Filter the data
+    filtered_df = filter_data(df, first_day, last_day)
+
+    # Create output directory if it doesn't exist
+    output_dir = f'./data/{symbol}'
+    os.makedirs(output_dir, exist_ok=True)
+
+    # Define the output file name with year and month
+    now = datetime.now()
+    output_file_name = f'{symbol}_{now.year}_{now.month}.csv'
+    output_path = os.path.join(output_dir, output_file_name)
+
+    # Save the filtered data to a new CSV file
+    save_filtered_data(filtered_df, output_path)
+
+if __name__ == "__main__":
+    # Specify the symbol to process
+    symbol = 'SPY'
+    main(symbol)

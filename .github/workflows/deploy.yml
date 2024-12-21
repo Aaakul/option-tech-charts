@@ -39,6 +39,10 @@ jobs:
       - name: List JSON files
         run: ls -la backend/JSON/
 
+      - name: Clean CSVs
+        run: |
+          rm -rf backend/data/*        
+
       - name: Copy JSON files to React public directory
         run: |
           cp -r backend/JSON/* frontend/option-tech-charts/public/data/
