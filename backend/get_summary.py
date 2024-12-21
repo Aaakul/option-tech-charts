@@ -48,7 +48,7 @@ def calculate_totals(group):
     call_open_interest = call_group['open_interest'].sum()
     put_open_interest = put_group['open_interest'].sum()
     
-    # multiplier 100
+    # Multiplier 100
     call_delta = (call_group['delta'] * call_group['open_interest']).sum() * 100
     put_delta = (put_group['delta'] * put_group['open_interest']).sum() * 100
     call_gamma = (call_group['gamma'] * call_group['open_interest']).sum() * 100
@@ -107,8 +107,8 @@ def main(symbol):
     required_columns = ['expiration', 'strike', 'type', 'open_interest', 'delta', 'gamma']
     check_required_columns(df, required_columns)
 
-    # Calculate totals by strike
-    result_df = df.groupby('strike').apply(calculate_totals).reset_index()
+    # Calculate totals by strike, ensuring the 'strike' column is included in the result
+    result_df = df.groupby('strike', as_index=False).apply(calculate_totals, include_groups=False)
 
     # Create output directory if it doesn't exist
     os.makedirs(input_dir, exist_ok=True)
