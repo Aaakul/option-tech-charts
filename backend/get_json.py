@@ -1,27 +1,5 @@
 import os
-import pandas as pd
-import json
-from datetime import datetime
-
-def load_csv(file_path):
-    """
-    Load a CSV file into a DataFrame.
-
-    :param file_path: The path to the CSV file.
-    :return: A pandas DataFrame containing the CSV data or None if an error occurs.
-    """
-    try:
-        df = pd.read_csv(file_path)
-        return df
-    except FileNotFoundError:
-        print(f"Error: The file {file_path} does not exist.")
-        return None
-    except pd.errors.EmptyDataError:
-        print(f"Error: The file {file_path} is empty.")
-        return None
-    except Exception as e:
-        print(f"An error occurred while reading the file: {e}")
-        return None
+from helper import load_csv, save_to_json, get_current_date_string
 
 def prepare_data(df):
     """
@@ -39,23 +17,6 @@ def prepare_data(df):
     
     return data
 
-def save_to_json(data, output_path):
-    """
-    Save the prepared data to a JSON file.
-
-    :param data: A list of dictionaries containing the prepared data.
-    :param output_path: The path where the new JSON file will be saved.
-    :return: True if the file was saved successfully, False otherwise.
-    """
-    try:
-        with open(output_path, 'w') as json_file:
-            json.dump(data, json_file, indent=4)
-        print(f"Data has been exported to {output_path}")
-        return True
-    except Exception as e:
-        print(f"An error occurred while saving the file: {e}")
-        return False
-
 def main(symbol):
     """
     Main function to execute the JSON export process.
@@ -63,8 +24,8 @@ def main(symbol):
     :param symbol: The stock or option symbol to process.
     """
     # Define file paths
-    now = datetime.now()
-    input_file_name = f'{symbol}_filtered_{now.year}_{now.month}.csv'
+    date_str = get_current_date_string()
+    input_file_name = f'{symbol}_filtered_{date_str}.csv'
     input_dir = f'./data/{symbol}'
     input_path = os.path.join(input_dir, input_file_name)
 
@@ -77,9 +38,7 @@ def main(symbol):
     # Prepare the data for JSON export
     data = prepare_data(df)
 
-    # Create output directory if it doesn't exist
     output_dir = f'./JSON/{symbol}'
-    os.makedirs(output_dir, exist_ok=True)
 
     # Define the output file name with year and month
     output_file_name = f'{symbol}_data.json'

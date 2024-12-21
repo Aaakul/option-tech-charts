@@ -1,39 +1,6 @@
 import os
 import pandas as pd
-from datetime import datetime
-
-def load_csv(file_path):
-    """
-    Load a CSV file into a DataFrame.
-
-    :param file_path: The path to the CSV file.
-    :return: A pandas DataFrame containing the CSV data or None if an error occurs.
-    """
-    try:
-        df = pd.read_csv(file_path)
-        return df
-    except FileNotFoundError:
-        print(f"Error: The file {file_path} does not exist.")
-        return None
-    except pd.errors.EmptyDataError:
-        print(f"Error: The file {file_path} is empty.")
-        return None
-    except Exception as e:
-        print(f"An error occurred while reading the file: {e}")
-        return None
-
-def check_required_columns(df, required_columns):
-    """
-    Check if all required columns are present in the DataFrame.
-
-    :param df: The input DataFrame.
-    :param required_columns: A list of required column names.
-    :return: True if all required columns are present, False otherwise.
-    """
-    missing_columns = [column for column in required_columns if column not in df.columns]
-    if missing_columns:
-        raise ValueError(f'Missing columns: {", ".join(missing_columns)}')
-    return True
+from helper import load_csv, save_to_csv, check_required_columns, get_current_date_string
 
 def calculate_totals(group):
     """
@@ -52,9 +19,9 @@ def calculate_totals(group):
     call_delta = (call_group['delta'] * call_group['open_interest']).sum() * 100
     put_delta = (put_group['delta'] * put_group['open_interest']).sum() * 100
     call_gamma = (call_group['gamma'] * call_group['open_interest']).sum() * 100
-    put_gamma = -(put_group['gamma'] * put_group['open_interest']).sum() * 100  # negative gamma
+    put_gamma = -(put_group['gamma'] * put_group['open_interest']).sum() * 100  # Negative gamma
     
-    # calculate net Delta, Gamma
+    # Calculate Net Delta, Gamma
     net_delta = call_delta + put_delta
     net_gamma = call_gamma + put_gamma  
     
@@ -69,22 +36,6 @@ def calculate_totals(group):
         'net_gamma': net_gamma.round(2),
     })
 
-def save_result_df(result_df, output_path):
-    """
-    Save the result DataFrame to a new CSV file.
-
-    :param result_df: The result DataFrame to save.
-    :param output_path: The path where the new CSV file will be saved.
-    :return: True if the file was saved successfully, False otherwise.
-    """
-    try:
-        result_df.to_csv(output_path, index=False)
-        print(f"Summary has been saved to {output_path}")
-        return True
-    except Exception as e:
-        print(f"An error occurred while saving the file: {e}")
-        return False
-
 def main(symbol):
     """
     Main function to execute the summary calculation process.
@@ -92,8 +43,8 @@ def main(symbol):
     :param symbol: The stock or option symbol to process.
     """
     # Define file paths
-    now = datetime.now()
-    input_file_name = f'{symbol}_{now.year}_{now.month}.csv'
+    date_str = get_current_date_string()
+    input_file_name = f'{symbol}_{date_str}.csv'
     input_dir = f'./data/{symbol}'
     input_path = os.path.join(input_dir, input_file_name)
 
@@ -110,15 +61,12 @@ def main(symbol):
     # Calculate totals by strike, ensuring the 'strike' column is included in the result
     result_df = df.groupby('strike', as_index=False).apply(calculate_totals, include_groups=False)
 
-    # Create output directory if it doesn't exist
-    os.makedirs(input_dir, exist_ok=True)
-
     # Define the output file name with year and month
-    output_file_name = f'{symbol}_summary_{now.year}_{now.month}.csv'
+    output_file_name = f'{symbol}_summary_{date_str}.csv'
     output_path = os.path.join(input_dir, output_file_name)
 
     # Save the result DataFrame to a new CSV file
-    save_result_df(result_df, output_path)
+    save_to_csv(result_df, output_path)
 
 if __name__ == "__main__":
     # Specify the symbol to process

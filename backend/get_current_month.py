@@ -1,6 +1,7 @@
 import pandas as pd
 from datetime import datetime, timedelta
 import os
+from helper import load_csv, create_output_directory, save_to_csv, get_current_date_string
 
 def get_month_dates():
     """
@@ -16,26 +17,6 @@ def get_month_dates():
         next_month = today.replace(month=today.month + 1, day=1)
     last_day_of_month = next_month - timedelta(days=1)
     return first_day_of_month.strftime('%Y-%m-%d'), last_day_of_month.strftime('%Y-%m-%d')
-
-def load_csv(file_path):
-    """
-    Load a CSV file into a DataFrame.
-
-    :param file_path: The path to the CSV file.
-    :return: A pandas DataFrame containing the CSV data.
-    """
-    try:
-        df = pd.read_csv(file_path)
-        return df
-    except FileNotFoundError:
-        print(f"Error: The file {file_path} does not exist.")
-        return None
-    except pd.errors.EmptyDataError:
-        print(f"Error: The file {file_path} is empty.")
-        return None
-    except Exception as e:
-        print(f"An error occurred while reading the file: {e}")
-        return None
 
 def filter_data(df, first_day, last_day):
     """
@@ -58,22 +39,6 @@ def filter_data(df, first_day, last_day):
     # Select only required columns
     filtered_columns = ['expiration', 'strike', 'type', 'open_interest', 'implied_volatility', 'delta', 'gamma']
     return filtered_df[filtered_columns]
-
-def save_filtered_data(filtered_df, output_path):
-    """
-    Save the filtered DataFrame to a new CSV file.
-
-    :param filtered_df: The filtered DataFrame to save.
-    :param output_path: The path where the new CSV file will be saved.
-    :return: True if the file was saved successfully, False otherwise.
-    """
-    try:
-        filtered_df.to_csv(output_path, index=False)
-        print(f"Data has been filtered and saved to {output_path}")
-        return True
-    except Exception as e:
-        print(f"An error occurred while saving the file: {e}")
-        return False
 
 def main(symbol):
     """
@@ -99,16 +64,15 @@ def main(symbol):
     filtered_df = filter_data(df, first_day, last_day)
 
     # Create output directory if it doesn't exist
-    output_dir = f'./data/{symbol}'
-    os.makedirs(output_dir, exist_ok=True)
+    create_output_directory(input_dir)
 
     # Define the output file name with year and month
-    now = datetime.now()
-    output_file_name = f'{symbol}_{now.year}_{now.month}.csv'
-    output_path = os.path.join(output_dir, output_file_name)
+    date_str = get_current_date_string()
+    output_file_name = f'{symbol}_{date_str}.csv'
+    output_path = os.path.join(input_dir, output_file_name)
 
     # Save the filtered data to a new CSV file
-    save_filtered_data(filtered_df, output_path)
+    save_to_csv(filtered_df, output_path)
 
 if __name__ == "__main__":
     # Specify the symbol to process

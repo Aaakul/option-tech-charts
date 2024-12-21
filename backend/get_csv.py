@@ -1,5 +1,6 @@
 import os
 import requests
+from helper import create_output_directory
 
 # Constants for default values and paths
 DEFAULT_SAVE_DIR = './data'
@@ -28,9 +29,8 @@ def download_csv(symbol, api_key, save_dir=None):
     # Construct the API URL (hardcoded as per request)
     url = f'https://www.alphavantage.co/query?function=HISTORICAL_OPTIONS&symbol={symbol}&apikey={api_key}&datatype=csv'
 
-    # Create the save directory if it doesn't exist
-    if not os.path.exists(save_dir):
-        os.makedirs(save_dir)
+    # Create output directory if it doesn't exist
+    create_output_directory(save_dir)
 
     # Define the file path to save the CSV
     file_path = os.path.join(save_dir, f'historical_options_{symbol}.csv')

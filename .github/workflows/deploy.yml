@@ -30,11 +30,8 @@ jobs:
           ALPHA_VANTAGE_API_KEY: ${{ secrets.ALPHA_VANTAGE_API_KEY }}
         run: |
           cd backend
-          python get_csv.py
-          python get_current_month.py
-          python get_summary.py
-          python get_filtered.py
-          python get_json.py
+          chmod +x run_scripts.sh
+          ./run_scripts.sh         
 
       - name: List JSON files
         run: ls -la backend/JSON/
