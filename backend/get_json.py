@@ -1,5 +1,7 @@
 import os
-from helper import load_csv, save_to_json, get_current_date_string
+
+from dotenv import load_dotenv
+from helper import create_output_directory, load_csv, save_to_json, get_current_date_string
 
 def prepare_data(df):
     """
@@ -20,8 +22,6 @@ def prepare_data(df):
 def main(symbol):
     """
     Main function to execute the JSON export process.
-
-    :param symbol: The stock or option symbol to process.
     """
     # Define file paths
     date_str = get_current_date_string()
@@ -32,22 +32,32 @@ def main(symbol):
     # Load the CSV file into a DataFrame
     df = load_csv(input_path)
     if df is None:
-        print("Failed to load the CSV file. Exiting.")
-        return
+        print(f"Failed to load the CSV file for symbol {symbol}.")
+        return False
 
     # Prepare the data for JSON export
     data = prepare_data(df)
 
-    output_dir = f'./JSON/{symbol}'
+    output_dir = os.path.join('./JSON', symbol)  # Use os.path.join for cross-platform compatibility
+
+    # Ensure the output directory exists
+    create_output_directory(output_dir)
 
     # Define the output file name with year and month
     output_file_name = f'{symbol}_data.json'
     output_path = os.path.join(output_dir, output_file_name)
 
     # Save the data to a JSON file
-    save_to_json(data, output_path)
+    return save_to_json(data, output_path)
 
-if __name__ == "__main__":
-    # Specify the symbol to process
-    symbol = 'SPY'
-    main(symbol)
+# Load symbols from .env.public file
+load_dotenv(dotenv_path='.env.public')  # Specify path to .env.public explicitly
+symbols = os.getenv('SYMBOLS', '').split(',')
+if __name__ == '__main__':
+    if not symbols or symbols == ['']:
+        print("No symbols provided in the .env.public file under SYMBOLS.")
+    else:
+        for symbol in symbols:
+            success = main(symbol)
+            if not success:
+                print(f"get_json.py: Failed to deal CSV file for symbol {symbol}.")

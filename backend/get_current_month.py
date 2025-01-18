@@ -1,3 +1,4 @@
+from dotenv import load_dotenv
 import pandas as pd
 from datetime import datetime, timedelta
 import os
@@ -45,6 +46,7 @@ def main(symbol):
     Main function to execute the data filtering process.
 
     :param symbol: The stock or option symbol to process.
+    :return: True if the process was successful, False otherwise.
     """
     # Define file paths
     input_dir = f'./data/{symbol}'
@@ -58,7 +60,7 @@ def main(symbol):
     df = load_csv(input_path)
     if df is None:
         print("Failed to load the CSV file. Exiting.")
-        return
+        return False
 
     # Filter the data
     filtered_df = filter_data(df, first_day, last_day)
@@ -72,9 +74,17 @@ def main(symbol):
     output_path = os.path.join(input_dir, output_file_name)
 
     # Save the filtered data to a new CSV file
-    save_to_csv(filtered_df, output_path)
+    return save_to_csv(filtered_df, output_path)
+    
+# Load symbols from .env.public file
+load_dotenv(dotenv_path='.env.public')  # Specify path to .env.public explicitly
+symbols = os.getenv('SYMBOLS', '').split(',')
 
-if __name__ == "__main__":
-    # Specify the symbol to process
-    symbol = 'SPY'
-    main(symbol)
+if __name__ == '__main__':
+    if not symbols or symbols == ['']:
+        print("No symbols provided in the .env.public file under SYMBOLS.")
+    else:
+        for symbol in symbols:
+            success = main(symbol.strip())
+            if not success:
+                print(f"get_current_month.py: Failed to deal CSV file for symbol {symbol}.")

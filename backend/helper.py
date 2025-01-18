@@ -67,7 +67,8 @@ def check_required_columns(df, required_columns):
     missing_columns = [column for column in required_columns if column not in df.columns]
     if missing_columns:
         raise ValueError(f'Missing columns: {", ".join(missing_columns)}')
-    return True
+    else:
+        return True
 
 def create_output_directory(output_dir):
     """

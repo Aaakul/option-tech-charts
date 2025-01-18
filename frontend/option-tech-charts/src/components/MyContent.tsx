@@ -22,7 +22,7 @@ const MyContent: React.FC<MyContentProps> = ({
   };
   
   const handleSymbolSelect = (symbol: string) => {
-    setSelectedSymbol(symbol.toUpperCase);
+    setSelectedSymbol(symbol.toUpperCase());
   };
 
   const chartTitle = `${selectedSymbol} option ${selectedChart}`;

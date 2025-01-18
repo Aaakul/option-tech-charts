@@ -1,4 +1,5 @@
 import os
+from dotenv import load_dotenv
 import pandas as pd
 from helper import load_csv, save_to_csv, check_required_columns, get_current_date_string
 
@@ -41,6 +42,7 @@ def main(symbol):
     Main function to execute the summary calculation process.
 
     :param symbol: The stock or option symbol to process.
+    :return: True if the process was successful, False otherwise.
     """
     # Define file paths
     date_str = get_current_date_string()
@@ -52,7 +54,7 @@ def main(symbol):
     df = load_csv(input_path)
     if df is None:
         print("Failed to load the CSV file. Exiting.")
-        return
+        return False
 
     # Ensure all necessary columns are present
     required_columns = ['expiration', 'strike', 'type', 'open_interest', 'delta', 'gamma']
@@ -66,9 +68,16 @@ def main(symbol):
     output_path = os.path.join(input_dir, output_file_name)
 
     # Save the result DataFrame to a new CSV file
-    save_to_csv(result_df, output_path)
+    return save_to_csv(result_df, output_path)
 
-if __name__ == "__main__":
-    # Specify the symbol to process
-    symbol = 'SPY'
-    main(symbol)
+# Load symbols from .env.public file
+load_dotenv(dotenv_path='.env.public')  # Specify path to .env.public explicitly
+symbols = os.getenv('SYMBOLS', '').split(',')
+if __name__ == '__main__':
+    if not symbols or symbols == ['']:
+        print("No symbols provided in the .env.public file under SYMBOLS.")
+    else:
+        for symbol in symbols:
+            success = main(symbol)
+            if not success:
+                print(f"get_summary.py: Failed to deal CSV file for symbol {symbol}.")

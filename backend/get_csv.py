@@ -1,6 +1,15 @@
 import os
+from dotenv import load_dotenv
 import requests
 from helper import create_output_directory
+
+# Load API key from .env file
+load_dotenv()  # Loads the default .env file for API key
+api_key = os.getenv("ALPHA_VANTAGE_API_KEY")
+
+# Load symbols from .env.public file
+load_dotenv(dotenv_path='.env.public')  # Specify path to .env.public explicitly
+symbols = os.getenv('SYMBOLS', '').split(',')
 
 # Constants for default values and paths
 DEFAULT_SAVE_DIR = './data'
@@ -28,7 +37,7 @@ def download_csv(symbol, api_key, save_dir=None):
 
     # Construct the API URL (hardcoded as per request)
     url = f'https://www.alphavantage.co/query?function=HISTORICAL_OPTIONS&symbol={symbol}&apikey={api_key}&datatype=csv'
-
+    
     # Create output directory if it doesn't exist
     create_output_directory(save_dir)
 
@@ -50,11 +59,13 @@ def download_csv(symbol, api_key, save_dir=None):
         print(f'An error occurred while downloading the CSV: {e}')
         return False
 
-# Ensure the API key is set before calling the function
-api_key = os.getenv("ALPHA_VANTAGE_API_KEY")
-if api_key:
-    success = download_csv('SPY', api_key)
-    if not success:
-        print("Failed to download CSV file.")
-else:
-    print("API key not found in environment variables.")
+if __name__ == '__main__':
+    if not symbols or symbols == ['']:
+        print("No symbols provided in the .env.public file under SYMBOLS.")
+    elif api_key is None:
+        print("API key not found in the .env file.")
+    else:
+        for symbol in symbols:
+            success = download_csv(symbol.strip(), api_key)
+            if not success:
+                print(f"Failed to download CSV file for symbol {symbol}.")

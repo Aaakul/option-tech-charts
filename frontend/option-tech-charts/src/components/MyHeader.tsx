@@ -18,6 +18,7 @@ const MyHeader: React.FC<TitleProps> = ({
   isDarkTheme,
   onToggleTheme,
   onChartSelect,
+  onSymbolSelect,
 }) => {
   const items: MenuProps["items"] = [
     {
@@ -31,7 +32,7 @@ const MyHeader: React.FC<TitleProps> = ({
       onClick: () => onChartSelect("GEX"),
     },
     {
-      label: <p >DEX</p>,
+      label: <p>DEX</p>,
       key: "2",
       onClick: () => onChartSelect("DEX"),
     },
@@ -50,8 +51,10 @@ const MyHeader: React.FC<TitleProps> = ({
         </Dropdown>
         <div className="title">
           <Radio.Group defaultValue="SPY" buttonStyle="solid" size={"large"}>
-            <Radio.Button value="SPY">SPY</Radio.Button>
-            <Radio.Button value="QQQ" disabled>
+            <Radio.Button value="SPY" onClick={() => onSymbolSelect("SPY")}>
+              SPY
+            </Radio.Button>
+            <Radio.Button value="QQQ" onClick={() => onSymbolSelect("QQQ")}>
               QQQ
             </Radio.Button>
           </Radio.Group>
