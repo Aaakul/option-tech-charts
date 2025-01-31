@@ -25,9 +25,10 @@ jobs:
         run: |
           pip install -r ./backend/requirements.txt
 
-      - name: Clean CSVs
+      - name: Clean files
         run: |
-          rm -rf backend/data/*        
+          rm -rf backend/data/*
+          rm -rf backend/JSON/*      
 
       - name: Run Python scripts
         env:
@@ -37,8 +38,10 @@ jobs:
           chmod +x run_scripts.sh
           ./run_scripts.sh         
 
-      - name: List JSON files
-        run: ls -la backend/JSON/
+      - name: List data files
+        run: |
+          ls -la backend/JSON/
+          ls -la backend/data/
 
       - name: Copy JSON files to React public directory
         run: |
