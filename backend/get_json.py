@@ -19,33 +19,32 @@ def prepare_data(df):
     
     return data
 
-def main(symbol):
+def main(symbol, file_suffix):
     """
     Main function to execute the JSON export process.
+
+    :param file_suffix: The suffix of the file name indicating its type.
+    :return: True if successful, False otherwise.
     """
     # Define file paths
-    date_str = get_current_date_string()
-    input_file_name = f'{symbol}_filtered_{date_str}.csv'
+    input_file_name = f'{symbol}_filtered{file_suffix}.csv'
     input_dir = f'./data/{symbol}'
     input_path = os.path.join(input_dir, input_file_name)
 
-    # Load the CSV file into a DataFrame
+    output_dir = os.path.join('./JSON', symbol)
+    output_file_name = f'{symbol}_0dte.json' if file_suffix == '_0dte' else f'{symbol}_month.json'
+    output_path = os.path.join(output_dir, output_file_name)
+
+    # Load the CSV file
     df = load_csv(input_path)
     if df is None:
-        print(f"Failed to load the CSV file for symbol {symbol}.")
         return False
 
     # Prepare the data for JSON export
     data = prepare_data(df)
 
-    output_dir = os.path.join('./JSON', symbol)  # Use os.path.join for cross-platform compatibility
-
     # Ensure the output directory exists
     create_output_directory(output_dir)
-
-    # Define the output file name with year and month
-    output_file_name = f'{symbol}_data.json'
-    output_path = os.path.join(output_dir, output_file_name)
 
     # Save the data to a JSON file
     return save_to_json(data, output_path)
@@ -57,7 +56,14 @@ if __name__ == '__main__':
     if not symbols or symbols == ['']:
         print("No symbols provided in the .env.public file under SYMBOLS.")
     else:
+        date_str = get_current_date_string()
+        file_types = [f'_{date_str}', '_0dte']
         for symbol in symbols:
-            success = main(symbol)
-            if not success:
-                print(f"get_json.py: Failed to deal CSV file for symbol {symbol}.")
+            success_all = True
+            for file_suffix in file_types:
+                success = main(symbol, file_suffix)
+                if not success:
+                    print(f"Failed to process CSV file with suffix '{file_suffix}' for symbol {symbol}.")
+                    success_all = False
+            if success_all:
+                print(f"All files processed successfully for symbol {symbol}.")

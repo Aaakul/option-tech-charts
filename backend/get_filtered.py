@@ -28,7 +28,7 @@ def filter_data(df):
     
     return second_filtered_df
 
-def main(symbol):
+def process_csv(symbol, file_suffix):
     """
     Main function to execute the data filtering process.
 
@@ -36,23 +36,22 @@ def main(symbol):
     :return: True if the process was successful, False otherwise.
     """
     # Define file paths
-    date_str = get_current_date_string()
-    input_file_name = f'{symbol}_summary_{date_str}.csv'
+    input_file_name = f'{symbol}_summary{file_suffix}.csv'
     input_dir = f'./data/{symbol}'
     input_path = os.path.join(input_dir, input_file_name)
+
+
+    # Define the output file name with year and month
+    output_file_name = f'{symbol}_filtered{file_suffix}.csv'
+    output_path = os.path.join(input_dir, output_file_name)
 
     # Load the CSV file into a DataFrame
     df = load_csv(input_path)
     if df is None:
-        print("Failed to load the CSV file. Exiting.")
         return False
 
     # Filter the data
     filtered_df = filter_data(df)
-
-    # Define the output file name with year and month
-    output_file_name = f'{symbol}_filtered_{date_str}.csv'
-    output_path = os.path.join(input_dir, output_file_name)
 
     # Save the filtered data to a new CSV file
     return save_to_csv(filtered_df, output_path)
@@ -64,7 +63,14 @@ if __name__ == '__main__':
     if not symbols or symbols == ['']:
         print("No symbols provided in the .env.public file under SYMBOLS.")
     else:
+        date_str = get_current_date_string()
+        file_types = [f'_{date_str}', '_0dte']
         for symbol in symbols:
-            success = main(symbol)
-            if not success:
-                print(f"get_filtered.py: Failed to deal CSV file for symbol {symbol}.")
+            success_all = True
+            for file_suffix in file_types:
+                success = process_csv(symbol, file_suffix)
+                if not success:
+                    print(f"Failed to process CSV file with suffix '{file_suffix}' for symbol {symbol}.")
+                    success_all = False
+            if success_all:
+                print(f"All files processed successfully for symbol {symbol}.")

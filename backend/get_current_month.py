@@ -5,11 +5,6 @@ import os
 from helper import load_csv, create_output_directory, save_to_csv, get_current_date_string
 
 def get_today_and_end_of_month():
-    """
-    Get today's date and the last day of the current month.
-
-    :return: A tuple containing today's date and the last day of the month as strings in 'YYYY-MM-DD' format.
-    """
     today = datetime.now()
     if today.month == 12:
         next_month = today.replace(year=today.year + 1, month=1, day=1)
@@ -19,14 +14,6 @@ def get_today_and_end_of_month():
     return today.strftime('%Y-%m-%d'), last_day_of_month.strftime('%Y-%m-%d')
 
 def filter_data(df, today, last_day):
-    """
-    Filter the DataFrame for data from today to the end of the current month based on expiration date and other criteria.
-
-    :param df: The input DataFrame.
-    :param today: Today's date as a string in 'YYYY-MM-DD' format.
-    :param last_day: The last day of the current month as a string in 'YYYY-MM-DD' format.
-    :return: A filtered DataFrame.
-    """
     df['expiration'] = pd.to_datetime(df['expiration'])
     filtered_df = df[(df['expiration'] >= today) & 
                      (df['expiration'] <= last_day) & 
@@ -35,17 +22,38 @@ def filter_data(df, today, last_day):
     filtered_columns = ['expiration', 'strike', 'type', 'open_interest', 'implied_volatility', 'delta', 'gamma']
     return filtered_df[filtered_columns]
 
+def filter_next_expiration(filtered_df):
+    if filtered_df.empty:
+        return pd.DataFrame()
+    next_expiration = filtered_df.iloc[0]['expiration']
+    next_expiration_df = filtered_df[filtered_df['expiration'] == next_expiration]
+    return next_expiration_df
+
 def main(symbol):
     today, last_day = get_today_and_end_of_month()
     input_path = f'./data/{symbol}/historical_options_{symbol}.csv'
     df = load_csv(input_path)
     if df is None:
-        print("Failed to load the CSV file. Exiting.")
         return False
     filtered_df = filter_data(df, today, last_day)
+    
+    if filtered_df.empty:
+        print(f"No data available for {today} for symbol {symbol}.")
+        return True
+    
     create_output_directory(f"./data/{symbol}")
     output_path = os.path.join(f"./data/{symbol}", f'{symbol}_{get_current_date_string()}.csv')
-    return save_to_csv(filtered_df, output_path)
+    if not save_to_csv(filtered_df, output_path):
+        return False
+
+    # Generate next expiration date file
+    next_expiration_df = filter_next_expiration(filtered_df)
+    if not next_expiration_df.empty:
+        next_output_path = os.path.join(f"./data/{symbol}", f'{symbol}_0dte.csv')
+        return save_to_csv(next_expiration_df, next_output_path)
+    else:
+        print(f"No specific next expiration date data found for symbol {symbol}.")
+        return True
 
 load_dotenv(dotenv_path='.env.public')
 symbols = os.getenv('SYMBOLS', '').split(',')

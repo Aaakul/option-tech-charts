@@ -1,4 +1,5 @@
 import os
+from dotenv import load_dotenv
 import pandas as pd
 from datetime import datetime
 import json
@@ -86,3 +87,48 @@ def get_current_date_string():
     """
     now = datetime.now()
     return f"{now.year}_{now.month}"
+
+
+def process_csv(func):
+    """
+    Function to process the data for predefined symbols and file suffixes.
+    
+    :param func: Function used to process DataFrame. 
+    :return: True if the process was successful for all symbols and suffixes, False otherwise.
+    """
+    success_all = True
+    # Load symbols from .env.public file
+    load_dotenv(dotenv_path='.env.public')  # Specify path to .env.public explicitly
+    symbols = os.getenv('SYMBOLS', '').split(',')
+    if not symbols or symbols == ['']:
+        print("No symbols provided in the .env.public file under SYMBOLS.")
+        return False
+
+    date_str = get_current_date_string()
+    file_types = [f'_{date_str}', '_0dte']
+    
+    for symbol in symbols:
+        for file_suffix in file_types:
+            input_file_name = f'{symbol}_summary{file_suffix}.csv'
+            input_dir = './data/{}'.format(symbol)
+            input_path = os.path.join(input_dir, input_file_name)
+
+            output_file_name = f'{symbol}_filtered{file_suffix}.csv'
+            output_path = os.path.join(input_dir, output_file_name)
+
+            # Load the CSV file into a DataFrame
+            df = load_csv(input_path)
+            if df is None:
+                success_all = False
+                print(f"Failed to load CSV file with suffix '{file_suffix}' for symbol {symbol}.")
+                continue
+
+            # Process the data
+            processed_df = func(df)
+
+            # Save the filtered data to a new CSV file
+            if not save_to_csv(processed_df, output_path):
+                success_all = False
+                print(f"Failed to save processed CSV file with suffix '{file_suffix}' for symbol {symbol}.")
+
+    return success_all

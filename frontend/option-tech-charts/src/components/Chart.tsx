@@ -70,9 +70,10 @@ const datasetConfig: DatasetConfig = {
 interface ChartProps {
   selectedChart: keyof DatasetConfig;
   symbol: string;
+  maturity: string;
 }
 
-const Chart: React.FC<ChartProps> = ({ selectedChart, symbol }) => {
+const Chart: React.FC<ChartProps> = ({ selectedChart, symbol, maturity }) => {
   const [chartData, setChartData] = useState<{
     labels: number[];
     datasets: {
@@ -90,7 +91,7 @@ const Chart: React.FC<ChartProps> = ({ selectedChart, symbol }) => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `${process.env.PUBLIC_URL}/data/${symbol}/${symbol}_data.json`
+          `${process.env.PUBLIC_URL}/data/${symbol}/${symbol}_${maturity}.json`
         );
         const data: OptionData[] = await response.json();
         // get chart data
@@ -118,7 +119,7 @@ const Chart: React.FC<ChartProps> = ({ selectedChart, symbol }) => {
     };
 
     fetchData();
-  }, [selectedChart, symbol]);
+  }, [selectedChart, symbol, maturity]);
 
   const options: ChartOptions<"bar"> = {
     maintainAspectRatio: false,
