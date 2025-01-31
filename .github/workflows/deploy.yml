@@ -28,7 +28,7 @@ jobs:
       - name: Clean files
         run: |
           rm -rf backend/data/*
-          rm -rf backend/JSON/*      
+          rm -rf backend/JSON/*
 
       - name: Run Python scripts
         env:
@@ -36,12 +36,19 @@ jobs:
         run: |
           cd backend
           chmod +x run_scripts.sh
-          ./run_scripts.sh         
+          ./run_scripts.sh
 
-      - name: List data files
-        run: |
-          ls -la backend/JSON/
-          ls -la backend/data/
+      # - name: Check JSON files
+      #   run: |
+      #     md5_backend=$(md5sum backend/data/JSON/SPY/SPY_0dte.json | awk '{ print $1 }')
+      #     md5_frontend=$(md5sum frontend/option-tech-charts/public/data/SPY/SPY_0dte.json | awk '{ print $1 }')
+          
+      #     if [ "$md5_backend" = "$md5_frontend" ]; then
+      #       echo "The files have the same content."
+      #     else
+      #       echo "The files have different content."
+      #       exit 1
+      #     fi
 
       - name: Copy JSON files to React public directory
         run: |
