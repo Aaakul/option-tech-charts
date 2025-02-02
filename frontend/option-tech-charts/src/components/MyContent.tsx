@@ -1,4 +1,4 @@
-import { Layout, Select, Space } from "antd";
+import { Layout, Select } from "antd";
 import { Content } from "antd/es/layout/layout";
 import React, { useState } from "react";
 import MyHeader from "./MyHeader";
@@ -14,7 +14,7 @@ const MyContent: React.FC<MyContentProps> = ({
   isDarkTheme,
   onToggleTheme,
 }) => {
-  const [selectedChart, setSelectedChart] = useState("OI"); // ...DEX, GEX
+  const [selectedChart, setSelectedChart] = useState("GEX"); // ...OI, DEX
   const [selectedSymbol, setSelectedSymbol] = useState("SPY");
   const [selectedMaturity, setSelectedMaturity] = useState("month");
 
@@ -30,33 +30,30 @@ const MyContent: React.FC<MyContentProps> = ({
     setSelectedMaturity(value);
   };
 
-  const chartTitle = `${selectedSymbol} option ${selectedChart}`;
-  let chartDesc = " contracts total ",
-    chartDescExtra =
-      "Update at GMT 05:00 every weekdays. Click the data labels to hide/unhide the data.";
+  let chartTitle = "",
+    chartDesc = "Click labels to hide/unhide the data.";
 
   switch (selectedChart) {
     case "OI":
-      chartDesc +=
-        "open interest.  *Negative numbers represent OI of puts. " +
-        chartDescExtra;
+      chartTitle += "Open interest: ";
+      chartDesc += ` \n*Negative numbers represent OI of puts. `;
       break;
     case "DEX":
-      chartDesc += "delta exposure. " + chartDescExtra;
+      chartTitle += "Delta exposure: ";
       break;
     case "GEX":
-      chartDesc += "gamma exposure. " + chartDescExtra;
+      chartTitle += "Gamma exposure: ";
   }
 
   const selectMaturity = (
     <Select
       defaultValue="month"
       onChange={handleMaturitySelect}
-      style={{ width: 128 }}
+      style={{ width: "10rem" }}
       options={[
-        { value: "month", label: <p>Current month</p> },
-        { value: "0dte", label: <p>0DTE</p> },
-        { value: "week", label: <p>Current week</p>, disabled: true },
+        { value: "month", label: "Current month" },
+        { value: "0dte", label: "0DTE" },
+        { value: "week", label: "Current week", disabled: true },
       ]}
     />
   );
@@ -70,18 +67,21 @@ const MyContent: React.FC<MyContentProps> = ({
         onSymbolSelect={handleSymbolSelect}
       />
       <Content>
-        <h2>{chartTitle}</h2>
-        <div className="chart-desc">
-          <Space>
+        <div className="chart-title">
+          <h3>
+            {chartTitle}
             {selectMaturity}
-            <p>{chartDesc}</p>
-          </Space>
+          </h3>
+          <p>Update at GMT 05:00 every weekdays.</p>
         </div>
         <Chart
           selectedChart={selectedChart}
           symbol={selectedSymbol}
           maturity={selectedMaturity}
         />
+        <div className="chart-desc">
+          <i>{chartDesc}</i>
+        </div>
       </Content>
       <MyFooter />
     </Layout>

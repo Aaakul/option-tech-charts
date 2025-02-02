@@ -2,8 +2,9 @@ import {
   SunOutlined,
   MoonOutlined,
   MenuUnfoldOutlined,
+  GithubOutlined,
 } from "@ant-design/icons";
-import { Button, Dropdown, MenuProps, Radio } from "antd";
+import { Button, Dropdown, MenuProps, Radio, Space } from "antd";
 import { Header } from "antd/es/layout/layout";
 import React from "react";
 
@@ -49,7 +50,7 @@ const MyHeader: React.FC<TitleProps> = ({
             <Button type="text" icon={<MenuUnfoldOutlined />} />
           </a>
         </Dropdown>
-        <div className="title">
+        <div className="symbol-selector">
           <Radio.Group defaultValue="SPY" buttonStyle="solid" size={"large"}>
             <Radio.Button value="SPY" onClick={() => onSymbolSelect("SPY")}>
               SPY
@@ -59,8 +60,19 @@ const MyHeader: React.FC<TitleProps> = ({
             </Radio.Button>
           </Radio.Group>
         </div>
-        <div className="toggle-theme" onClick={onToggleTheme}>
-          {isDarkTheme ? <SunOutlined /> : <MoonOutlined />}
+        <div className="icons">
+          <Space size={'large'}>
+            <a
+              href="https://github.com/Aaakul/option-tech-charts"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <GithubOutlined />
+            </a>
+            <div className="toggle-theme" onClick={onToggleTheme}>
+              {isDarkTheme ? <SunOutlined /> : <MoonOutlined />}
+            </div>
+          </Space>
         </div>
       </div>
     </Header>
