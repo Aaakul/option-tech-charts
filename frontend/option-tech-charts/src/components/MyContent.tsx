@@ -16,7 +16,7 @@ const MyContent: React.FC<MyContentProps> = ({
 }) => {
   const [selectedChart, setSelectedChart] = useState("GEX"); // ...OI, DEX
   const [selectedSymbol, setSelectedSymbol] = useState("SPY");
-  const [selectedMaturity, setSelectedMaturity] = useState("month");
+  const [selectedMaturity, setSelectedMaturity] = useState("0dte");
 
   const handleChartSelect = (chartType: string) => {
     setSelectedChart(chartType);
@@ -47,13 +47,13 @@ const MyContent: React.FC<MyContentProps> = ({
 
   const selectMaturity = (
     <Select
-      defaultValue="month"
+      defaultValue="0dte"
       onChange={handleMaturitySelect}
-      style={{ width: "10rem" }}
+      style={{ width: "9rem" }}
       options={[
-        { value: "month", label: "Current month" },
         { value: "0dte", label: "0DTE" },
         { value: "week", label: "Current week", disabled: true },
+        { value: "month", label: "Current month" },
       ]}
     />
   );

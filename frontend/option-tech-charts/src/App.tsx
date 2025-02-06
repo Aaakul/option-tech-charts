@@ -3,7 +3,6 @@ import { ConfigProvider, Layout, theme } from "antd";
 import MyContent from "./components/MyContent";
 import { useState } from "react";
 
-
 function App() {
   const [isDarkTheme, setIsDarkTheme] = useState(true);
   const toggleTheme = () => setIsDarkTheme(!isDarkTheme);
@@ -17,6 +16,8 @@ function App() {
         components: {
           Layout: {
             headerBg: isDarkTheme ? "#001529" : "#ffffff",
+            headerHeight: "2.5rem",
+            headerPadding: "0",
           },
         },
       }}

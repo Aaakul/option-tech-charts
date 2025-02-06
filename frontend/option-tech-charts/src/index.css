@@ -1,11 +1,6 @@
-.header {
-  margin: auto;
-  height: 5vh;
-}
-
 .title-container {
-  padding-left: 3%;
-  padding: auto;
+  padding-left: 2%;
+  padding-right: 2%;
   display: flex;
   align-items: center;
 }
@@ -55,6 +50,10 @@ canvas {
 
 a {
   color: inherit;
+}
+
+p, i {
+  opacity: 0.8;
 }
 
 .chart-desc {

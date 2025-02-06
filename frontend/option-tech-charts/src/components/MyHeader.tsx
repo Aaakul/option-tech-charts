@@ -4,7 +4,7 @@ import {
   MenuUnfoldOutlined,
   GithubOutlined,
 } from "@ant-design/icons";
-import { Button, Dropdown, MenuProps, Radio, Space } from "antd";
+import { Button, Dropdown, MenuProps, Select, Space } from "antd";
 import { Header } from "antd/es/layout/layout";
 import React from "react";
 
@@ -51,17 +51,23 @@ const MyHeader: React.FC<TitleProps> = ({
           </a>
         </Dropdown>
         <div className="symbol-selector">
-          <Radio.Group defaultValue="SPY" buttonStyle="solid" size={"large"}>
-            <Radio.Button value="SPY" onClick={() => onSymbolSelect("SPY")}>
-              SPY
-            </Radio.Button>
-            <Radio.Button value="QQQ" onClick={() => onSymbolSelect("QQQ")}>
-              QQQ
-            </Radio.Button>
-          </Radio.Group>
+          <Select
+            defaultValue="SPY"
+            onChange={(value) => onSymbolSelect(value)}
+            style={{
+              width: "6rem",
+              height: "2rem",
+              textAlign: "center",
+            }}
+            options={[
+              { value: "SPY", label: <h3>SPY</h3> },
+              { value: "QQQ", label: <h3>QQQ</h3> },
+              { value: "IWM", label: <h3>IWM</h3> },
+            ]}
+          />
         </div>
         <div className="icons">
-          <Space size={'large'}>
+          <Space size={"large"}>
             <a
               href="https://github.com/Aaakul/option-tech-charts"
               target="_blank"
